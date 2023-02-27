@@ -1,11 +1,10 @@
 package com.driver.io.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "users")
 public class UserEntity{
@@ -25,6 +24,9 @@ public class UserEntity{
 
 	@Column(nullable = false, length = 120, unique = true)
 	private String email;
+
+	@OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
+	private List<OrderEntity> listOfOrder=new ArrayList<>();
 
 	public long getId() {
 		return id;

@@ -8,6 +8,18 @@ public class OrderDetailsResponse {
 	private String items[];
 	private String userId;
 	private boolean status;
+
+	public OrderDetailsResponse(String orderId, float cost, String[] items, String userId, boolean status) {
+		this.orderId = orderId;
+		this.cost = cost;
+		this.items = items;
+		this.userId = userId;
+		this.status = status;
+	}
+
+	public OrderDetailsResponse() {
+	}
+
 	public String getOrderId() {
 		return orderId;
 	}
