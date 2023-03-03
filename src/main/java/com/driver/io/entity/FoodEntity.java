@@ -22,7 +22,20 @@ public class FoodEntity{
 	@Column(nullable = false)
 	private String foodCategory;
 
+	@ManyToOne
+	@JoinColumn
+	OrderEntity orderEntity;
 
+	public FoodEntity() {
+	}
+
+	public OrderEntity getOrderEntity() {
+		return orderEntity;
+	}
+
+	public void setOrderEntity(OrderEntity orderEntity) {
+		this.orderEntity = orderEntity;
+	}
 
 	public long getId() {
 		return id;

@@ -28,6 +28,31 @@ public class OrderEntity {
 	@Column(nullable = false)
 	private boolean status;
 
+	@ManyToOne
+	@JoinColumn
+	UserEntity userEntity;
+
+	public OrderEntity() {
+	}
+
+	public UserEntity getUserEntity() {
+		return userEntity;
+	}
+
+	public void setUserEntity(UserEntity userEntity) {
+		this.userEntity = userEntity;
+	}
+
+	public List<FoodEntity> getFoodEntityList() {
+		return foodEntityList;
+	}
+
+	public void setFoodEntityList(List<FoodEntity> foodEntityList) {
+		this.foodEntityList = foodEntityList;
+	}
+
+	@OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL)
+	List<FoodEntity> foodEntityList;
 	public long getId() {
 		return id;
 	}
