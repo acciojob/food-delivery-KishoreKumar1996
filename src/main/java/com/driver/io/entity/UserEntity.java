@@ -25,8 +25,6 @@ public class UserEntity{
 	@Column(nullable = false, length = 120, unique = true)
 	private String email;
 
-	@OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-	private List<OrderEntity> listOfOrder=new ArrayList<>();
 
 	public long getId() {
 		return id;

@@ -10,26 +10,25 @@ import com.driver.model.response.RequestOperationStatus;
 import com.driver.service.OrderService;
 import com.driver.shared.dto.OrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class OrderServiceImpl implements OrderService{
 
     @Autowired
     OrderRepository orderRepository;
+
     @Override
     public OrderDto createOrder(OrderDto order) {
-
-        //set the attributes to order entity
-        OrderEntity orderEntity =new OrderEntity();
+        OrderEntity orderEntity = new OrderEntity();
         orderEntity.setOrderId(order.getOrderId());
-        orderEntity.setCost(order.getCost());
-        orderEntity.setId(order.getId());
-        orderEntity.setItems(order.getItems());
-        orderEntity.setStatus(order.isStatus());
         orderEntity.setUserId(order.getUserId());
-        //save to orderDTo
+        orderEntity.setCost(order.getCost());
+        orderEntity.setStatus(order.isStatus());
+        orderEntity.setItems(order.getItems());
+        orderRepository.save(orderEntity);
 
         order.setId(orderRepository.findByOrderId(order.getOrderId()).getId());
         return order;
@@ -37,55 +36,60 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderDto getOrderById(String orderId) throws Exception {
-        OrderEntity orderEntity=orderRepository.findByOrderId(orderId);
-        OrderDto orderDto=new OrderDto();
-        orderDto.setUserId(orderEntity.getUserId());
-        orderDto.setCost(orderEntity.getCost());
-        orderDto.setOrderId(orderEntity.getOrderId());
-        orderDto.setItems(orderEntity.getItems());
-        orderDto.setStatus(orderEntity.isStatus());
+        OrderEntity orderEntity = orderRepository.findByOrderId(orderId);
+        OrderDto orderDto = new OrderDto();
         orderDto.setId(orderEntity.getId());
-
+        orderDto.setOrderId(orderEntity.getOrderId());
+        orderDto.setUserId(orderEntity.getUserId());
+        orderDto.setStatus(orderEntity.isStatus());
+        orderDto.setCost(orderEntity.getCost());
+        orderDto.setItems(orderEntity.getItems());
         return orderDto;
+
     }
 
     @Override
     public OrderDto updateOrderDetails(String orderId, OrderDto order) throws Exception {
         OrderEntity orderEntity = orderRepository.findByOrderId(orderId);
         orderEntity.setUserId(order.getUserId());
-        orderEntity.setItems(order.getItems());
         orderEntity.setCost(order.getCost());
-
-
+        orderEntity.setItems(order.getItems());
         orderRepository.save(orderEntity);
+
         order.setId(orderEntity.getId());
-        orderEntity.setStatus(orderEntity.isStatus());
-        orderEntity.setOrderId(orderEntity.getOrderId());
+        order.setOrderId(orderEntity.getOrderId());
+        order.setStatus(orderEntity.isStatus());
+
         return order;
     }
 
     @Override
     public void deleteOrder(String orderId) throws Exception {
-     long Id=orderRepository.findByOrderId(orderId).getId();
-     orderRepository.deleteById(Id);
+        long id = orderRepository.findByOrderId(orderId).getId();
+        orderRepository.deleteById(id);
     }
 
     @Override
     public List<OrderDto> getOrders() {
-        List<OrderEntity> orderEntityList=(List<OrderEntity>) orderRepository.findAll();
-        List<OrderDto> orderDtoList=new ArrayList<>();
-        for(OrderEntity order: orderEntityList){
+        List<OrderEntity> list = (List<OrderEntity>) orderRepository.findAll();
+        List<OrderDto> orderDtoList = new ArrayList<>();
+        for(OrderEntity o : list){
             OrderDto orderDto = new OrderDto();
-            orderDto.setOrderId(order.getOrderId());
-            orderDto.setId(order.getId());
-            orderDto.setUserId(order.getUserId());
-            orderDto.setStatus(order.isStatus());
-            orderDto.setItems(order.getItems());
-            orderDto.setCost(order.getCost());
+            orderDto.setOrderId(o.getOrderId());
+            orderDto.setId(o.getId());
+            orderDto.setUserId(o.getUserId());
+            orderDto.setStatus(o.isStatus());
+            orderDto.setItems(o.getItems());
+            orderDto.setCost(o.getCost());
             orderDtoList.add(orderDto);
         }
         return orderDtoList;
     }
+
+    //===============================================
+    //CONVERTOR (Here below we are having some functions which will do conversions)
+    //===============================================
+
     public OrderDetailsResponse createOrder(OrderDetailsRequestModel order){
 
         OrderDto orderDto = new OrderDto();
@@ -95,7 +99,9 @@ public class OrderServiceImpl implements OrderService{
 
         OrderDto finalOrderDto = createOrder(orderDto);
 
+        //---------------------------------
         //Converting finalOrderDto into OrderDetailsResponse
+        //---------------------------------
 
         OrderDetailsResponse orderDetailsResponse = new OrderDetailsResponse();
         orderDetailsResponse.setOrderId(finalOrderDto.getOrderId());
@@ -123,7 +129,9 @@ public class OrderServiceImpl implements OrderService{
 
     public OrderDetailsResponse updateOrder(String id, OrderDetailsRequestModel order) throws Exception {
 
+        //---------------------------
         //We will convert 'order' (OrderDetailsRequestModel) into orderDto here
+        //---------------------------
 
         OrderDto orderDto = new OrderDto();
         orderDto.setUserId(order.getUserId());
@@ -131,7 +139,11 @@ public class OrderServiceImpl implements OrderService{
         orderDto.setItems(order.getItems());
 
         OrderDto finalOrderDto = updateOrderDetails(id,orderDto);
+
+        //---------------------------
         //We will convert this finalOrderDto into OrderDetailsResponse
+        //---------------------------
+
         OrderDetailsResponse orderDetailsResponse = new OrderDetailsResponse();
         orderDetailsResponse.setOrderId(finalOrderDto.getOrderId());
         orderDetailsResponse.setUserId(finalOrderDto.getUserId());

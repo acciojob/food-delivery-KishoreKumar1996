@@ -28,13 +28,6 @@ public class OrderEntity {
 	@Column(nullable = false)
 	private boolean status;
 
-	@ManyToOne
-	@JoinColumn
-	private UserEntity userEntity;
-
-	@OneToMany(mappedBy = "orderEntity",cascade = CascadeType.ALL)
-	private List<FoodEntity> FoodItems=new ArrayList<>();
-
 	public long getId() {
 		return id;
 	}
